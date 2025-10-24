@@ -143,7 +143,7 @@ python atlas_demo.py
 
 📸 **Evidencia: Ejecución del Robot ATLAS**
 
-![Clonacion atlas](https://github.com/user-attachments/assets/c21c87f5-9dab-4e0a-82b8-5dedbaca45bd)
+![Atlas](https://github.com/user-attachments/assets/f5f217cd-1da5-4298-9a5c-05125eb783c6)
 
 
 **Descripción técnica:**  
@@ -196,3 +196,4 @@ Facultad de Ingeniería Electrónica
 2025
 
 ---
+
