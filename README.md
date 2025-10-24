@@ -1,139 +1,198 @@
-> [!TIP]
-> For **symbolic dynamics**, check out [`safe-control-gym`](https://github.com/utiasDSL/safe-control-gym)
->
-> For **ROS2, PX4, and ArduPilot** support, check out [`aerial-autonomy-stack`](https://github.com/JacopoPan/aerial-autonomy-stack)
+# 🧠 Taller 2 - Simulaciones con PyBullet y Docker
 
-# gym-pybullet-drones
+**Universidad Santo Tomás**  
+**Facultad de Ingeniería Electrónica**  
+**Asignatura:** Laboratorio de Digitales  
+**Integrantes:**  
+- Yossed Mauricio Riaño Páez  
+- Miguel Montaña  
+- Jeferson Hernández  
 
-This is a minimalist refactoring of the original `gym-pybullet-drones` repository, designed for compatibility with [`gymnasium`](https://github.com/Farama-Foundation/Gymnasium), [`stable-baselines3` 2.0](https://github.com/DLR-RM/stable-baselines3/pull/1327), and [`betaflight`](https://github.com/betaflight/betaflight)/[`crazyflie-firmware`](https://github.com/bitcraze/crazyflie-firmware/) SITL.
+---
 
-> **NOTE**: if you want to access the original codebase, presented at IROS in 2021, please `git checkout [paper|master]`
+## 📘 Introducción
 
-<img src="gym_pybullet_drones/assets/helix.gif" alt="formation flight" width="325"> <img src="gym_pybullet_drones/assets/helix.png" alt="control info" width="425">
+El presente taller tiene como propósito desarrollar y comprender el funcionamiento de simulaciones físicas mediante **PyBullet**, un motor de física en tiempo real ampliamente utilizado en robótica, inteligencia artificial y control.  
+Adicionalmente, se aplicó **Docker** para garantizar la portabilidad de los entornos de simulación, permitiendo replicar cada experimento en cualquier equipo sin conflictos de dependencias.
 
-## Installation
+Las simulaciones abordadas fueron:
+- Drones controlados con *Gym-PyBullet-Drones*.  
+- Robot **Baxter** de Rethink Robotics.  
+- Robot humanoide **ATLAS** desarrollado por Boston Dynamics, ejecutado mediante el paquete *PyBullet Robots*.
 
-Tested on Intel x64/Ubuntu 22.04 and Apple Silicon/macOS 14.1.
+---
 
-```sh
-git clone https://github.com/utiasDSL/gym-pybullet-drones.git
-cd gym-pybullet-drones/
+## 🚀 1. Clonación del Repositorio Principal
 
-conda create -n drones python=3.10
-conda activate drones
+Se realizó la clonación del repositorio base para la ejecución de los tres entornos de simulación.  
+El proceso se llevó a cabo desde GitHub utilizando el siguiente comando:
 
-pip3 install --upgrade pip
-pip3 install -e . # if needed, `sudo apt install build-essential` to install `gcc` and build `pybullet`
-
-# check installed packages with `conda list`, deactivate with `conda deactivate`, remove with `conda remove -n drones --all`
+```bash
+git clone https://github.com/tu_usuario/Taller_2_Digitales.git
+cd Taller_2_Digitales
 ```
 
-## Use
+📸 **Evidencia: Clonación del Repositorio**
 
-### PID control examples
+![Clonacion drones - copia](https://github.com/user-attachments/assets/4832cb0a-5bc3-4f5d-9e1e-a162437cabb1)
 
-```sh
-cd gym_pybullet_drones/examples/
-python3 pid.py # position and velocity reference
-python3 pid_velocity.py # desired velocity reference
+
+---
+
+## ⚙️ 2. Instalación de Dependencias
+
+Para garantizar el correcto funcionamiento de las simulaciones, se instalaron las librerías necesarias en el entorno Python.
+
+```bash
+pip install pybullet gym-pybullet-drones pybullet_robots
 ```
 
-### Downwash effect example
+Estas dependencias permiten la carga de modelos URDF, la simulación de articulaciones, la generación de entornos 3D interactivos y la visualización del comportamiento físico en tiempo real.
 
-```sh
-cd gym_pybullet_drones/examples/
-python3 downwash.py
+---
+
+## 🧩 3. Ejecución de las Simulaciones
+
+### 🚁 3.1 Simulación de Drones
+
+El paquete **Gym-PyBullet-Drones** ofrece un entorno físico donde se modelan drones con diferentes configuraciones de propulsión, control y sensores.  
+Se ejecutó la simulación principal con el siguiente comando:
+
+```bash
+python fly.py
 ```
 
-### Reinforcement learning examples (SB3's PPO)
+📸 **Evidencia: Simulación de Drones**
 
-```sh
-cd gym_pybullet_drones/examples/
-python learn.py # task: single drone hover at z == 1.0
-python learn.py --multiagent true # task: 2-drone hover at z == 1.2 and 0.7
-LATEST_MODEL=$(ls -t results | head -n 1) && python play.py --model_path "results/${LATEST_MODEL}/best_model.zip" # play and visualize the most recent learned policy after training
+![Dron volando](https://github.com/user-attachments/assets/694266f6-e359-4ee9-bb7d-309a51bb75d2)
+![Drones](https://github.com/user-attachments/assets/8071457b-84ce-460a-b30e-9c5bf3b37d5d)
+
+
+**Descripción técnica:**  
+El script inicializa un entorno 3D donde se modela el comportamiento aerodinámico de un dron tipo *quadrotor*. Se analiza la estabilidad, el control PID y la respuesta dinámica ante perturbaciones.
+
+---
+
+### 🤖 3.2 Simulación del Robot Baxter
+
+El robot **Baxter** es un manipulador bimanual con visión estereoscópica, diseñado para la interacción segura con humanos.  
+Su entorno de simulación se encuentra en el repositorio *pybullet_robots*, desarrollado por Erwin Coumans (creador de PyBullet).
+
+#### 🔍 Clonación del Proyecto Baxter
+
+```bash
+git clone https://github.com/erwincoumans/pybullet_robots.git
+cd pybullet_robots
 ```
 
-<img src="gym_pybullet_drones/assets/rl.gif" alt="rl example" width="375"> <img src="gym_pybullet_drones/assets/marl.gif" alt="marl example" width="375">
+📸 **Evidencia: Clonación Exitosa**
 
-### Run all tests
+![Clonacion BAXTER](https://github.com/user-attachments/assets/7c4c18b0-d162-4da2-8f69-27167830426d)
 
-```sh
-# from the repo's top folder
-cd gym-pybullet-drones/
-pytest tests/
+
+#### ▶️ Ejecución
+
+```bash
+python baxter_demo.py
 ```
 
-### utiasDSL `pycffirmware` Python Bindings example (multiplatform, single-drone)
+📸 **Evidencia: Ejecución del Robot Baxter**
 
-Install [`pycffirmware`](https://github.com/utiasDSL/pycffirmware?tab=readme-ov-file#installation) for Ubuntu, macOS, or Windows
+![BAXTER 1](https://github.com/user-attachments/assets/5b7767c4-0fa6-4614-80ae-4950dec742b8)
+![BAXTER 2](https://github.com/user-attachments/assets/a008ac89-6f17-463f-a4f1-dfaa80bbea2c)
 
-```sh
-cd gym_pybullet_drones/examples/
-python3 cff-dsl.py
+
+**Descripción técnica:**  
+El modelo simula los 14 grados de libertad de los brazos de Baxter, permitiendo la visualización del control de articulaciones, la planificación de trayectorias y la manipulación de objetos virtuales mediante PyBullet.
+
+---
+
+### 🦾 3.3 Simulación del Robot ATLAS (Docker + PyBullet)
+
+#### 🧱 Descripción
+
+El robot **ATLAS** es un humanoide avanzado desarrollado por **Boston Dynamics**, diseñado para tareas de locomoción, equilibrio dinámico y manipulación en entornos complejos.  
+Para esta simulación, se utilizó el entorno de **PyBullet Robots**, que incluye un modelo físico detallado de ATLAS.
+
+#### 🔍 Clonación del Proyecto ATLAS
+
+```bash
+git clone https://github.com/erwincoumans/pybullet_robots.git
+cd pybullet_robots/robots/atlas
 ```
 
-### Betaflight SITL example (Ubuntu only)
+📸 **Evidencia: Clonación del Repositorio ATLAS**
 
-```sh
-git clone https://github.com/betaflight/betaflight 
-cd betaflight/
-git checkout cafe727 # `master` branch head at the time of writing (future release 4.5)
-make arm_sdk_install # if needed, `apt install curl``
-make TARGET=SITL # comment out line: https://github.com/betaflight/betaflight/blob/master/src/main/main.c#L52
-cp ~/gym-pybullet-drones/gym_pybullet_drones/assets/eeprom.bin ~/betaflight/ # assuming both gym-pybullet-drones/ and betaflight/ were cloned in ~/
-betaflight/obj/main/betaflight_SITL.elf
+![Clonacion atlas](https://github.com/user-attachments/assets/ebe1ab84-c192-432f-9ecd-09274fc9c3ea)
+
+
+
+---
+
+#### ▶️ Ejecución de la Simulación
+
+Para ejecutar la simulación:
+
+```bash
+python atlas.py
+```
+o
+```bash
+python atlas_demo.py
 ```
 
-In another terminal, run the example
+📸 **Evidencia: Ejecución del Robot ATLAS**
 
-```sh
-conda activate drones
-cd gym_pybullet_drones/examples/
-python3 beta.py --num_drones 1 # check the steps in the file's docstrings to use multiple drones
+![Clonacion atlas](https://github.com/user-attachments/assets/c21c87f5-9dab-4e0a-82b8-5dedbaca45bd)
+
+
+**Descripción técnica:**  
+El modelo del robot ATLAS implementa un sistema de control basado en torque aplicado a las articulaciones, simulando el movimiento humanoide.  
+Se utiliza la cinemática directa e inversa para determinar posiciones y orientaciones de los miembros, y el motor de física de PyBullet resuelve las colisiones y la gravedad en tiempo real.
+
+---
+
+## 📦 4. Integración con Docker
+
+Docker se utilizó para aislar las dependencias de los proyectos y garantizar la reproducibilidad de los experimentos.  
+Ejemplo de construcción y ejecución de la imagen:
+
+```bash
+docker build -t pybullet-sim .
+docker run -it pybullet-sim
 ```
 
-## Citation
+Esto permite desplegar un entorno limpio con todas las librerías necesarias y ejecutar los scripts sin conflictos de versiones.
 
-If you wish, please cite our [IROS 2021 paper](https://arxiv.org/abs/2103.02142) ([and original codebase](https://github.com/utiasDSL/gym-pybullet-drones/tree/paper)) as
+---
 
-```bibtex
-@INPROCEEDINGS{panerati2021learning,
-      title={Learning to Fly---a Gym Environment with PyBullet Physics for Reinforcement Learning of Multi-agent Quadcopter Control}, 
-      author={Jacopo Panerati and Hehui Zheng and SiQi Zhou and James Xu and Amanda Prorok and Angela P. Schoellig},
-      booktitle={2021 IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS)},
-      year={2021},
-      volume={},
-      number={},
-      pages={7512-7519},
-      doi={10.1109/IROS51168.2021.9635857}
-}
-```
+## 🧾 5. Conclusiones
 
-## References
+- Se logró implementar exitosamente las simulaciones de **Drones**, **Baxter** y **Atlas** usando PyBullet.  
+- Docker permitió una **mayor portabilidad y escalabilidad**, haciendo posible correr las simulaciones en diferentes equipos sin reconfiguración.  
+- PyBullet demostró ser una herramienta poderosa para el **aprendizaje en robótica**, gracias a su precisión física y compatibilidad con modelos URDF y SDF.  
+- La experimentación permitió comprender la **interacción entre controladores, articulaciones y sensores**, base esencial en el diseño de robots reales.
 
-- Carlos Luis and Jeroome Le Ny (2016) [*Design of a Trajectory Tracking Controller for a Nanoquadcopter*](https://arxiv.org/pdf/1608.05786.pdf)
-- Nathan Michael, Daniel Mellinger, Quentin Lindsey, Vijay Kumar (2010) [*The GRASP Multiple Micro-UAV Testbed*](https://ieeexplore.ieee.org/document/5569026)
-- Benoit Landry (2014) [*Planning and Control for Quadrotor Flight through Cluttered Environments*](http://groups.csail.mit.edu/robotics-center/public_papers/Landry15)
-- Julian Forster (2015) [*System Identification of the Crazyflie 2.0 Nano Quadrocopter*](https://www.research-collection.ethz.ch/handle/20.500.11850/214143)
-- Antonin Raffin, Ashley Hill, Maximilian Ernestus, Adam Gleave, Anssi Kanervisto, and Noah Dormann (2019) [*Stable Baselines3*](https://github.com/DLR-RM/stable-baselines3)
-- Guanya Shi, Xichen Shi, Michael O’Connell, Rose Yu, Kamyar Azizzadenesheli, Animashree Anandkumar, Yisong Yue, and Soon-Jo Chung (2019)
-[*Neural Lander: Stable Drone Landing Control Using Learned Dynamics*](https://arxiv.org/pdf/1811.08027.pdf)
-- C. Karen Liu and Dan Negrut (2020) [*The Role of Physics-Based Simulators in Robotics*](https://www.annualreviews.org/doi/pdf/10.1146/annurev-control-072220-093055)
-- Yunlong Song, Selim Naji, Elia Kaufmann, Antonio Loquercio, and Davide Scaramuzza (2020) [*Flightmare: A Flexible Quadrotor Simulator*](https://arxiv.org/pdf/2009.00563.pdf)
+---
 
------
-> University of Toronto's [Dynamic Systems Lab](https://github.com/utiasDSL) / [Vector Institute](https://github.com/VectorInstitute) / University of Cambridge's [Prorok Lab](https://github.com/proroklab)
+## 🔗 Referencias
 
-<!--
-## WIP/Desired Contributions/PRs
+1. Coumans, E. (2024). *PyBullet Robotics Simulation*. [GitHub Repository](https://github.com/erwincoumans/pybullet_robots)  
+2. PyBullet Documentation: [https://pybullet.org/](https://pybullet.org/)  
+3. DroneSim: *Gym-PyBullet-Drones* (MIT, 2023) – [https://github.com/utiasDSL/gym-pybullet-drones](https://github.com/utiasDSL/gym-pybullet-drones)  
+4. Boston Dynamics (2020). *ATLAS Technical Overview*.  
+5. Docker Documentation: [https://docs.docker.com/](https://docs.docker.com/)
 
-- [ ] Multi-drone `crazyflie-firmware` SITL support
-- [ ] Use SITL services with steppable simulation
-- [ ] Add motor delay, advanced ESC modeling by implementing a buffer in `BaseAviary._dynamics()`
-- [ ] Replace `rpy` with quaternions (and `ang_vel` with body rates) by editing `BaseAviary._updateAndStoreKinematicInformation()`, `BaseAviary._getDroneStateVector()`, and the `.computeObs()` methods of relevant subclasses
+---
 
-## Troubleshooting
+## 👥 Autores
 
-- On Ubuntu, with an NVIDIA card, if you receive a "Failed to create and OpenGL context" message, launch `nvidia-settings` and under "PRIME Profiles" select "NVIDIA (Performance Mode)", reboot and try again.
--->
+**Yossed Mauricio Riaño Páez**  
+**Miguel Montaña**  
+**Jeferson Hernández**  
+
+**Universidad Santo Tomás**  
+Facultad de Ingeniería Electrónica  
+2025
+
+---
